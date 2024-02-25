@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/style.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+        <link rel="icon" href="/static/logo.png" type="image/x-icon">
+        <script src="index.js"></script>
+        <title>Dashboard - Dermato</title>
+    </head>
+    <body>
+        <!-- Nav -->
+        <div class="navigation" style="margin-top: 10px;">
+            <nav height="100"> 
+                <ul class="nav-type">
+                        <!-- <a class="navbar-brand" href="#">
+                            <img src="logo.png" alt="..." height="75" width="75" >
+                        <h1 style="display: inline; vertical-align: top; align-items: center;">Reuse.IT</h1>
+                        </a> -->
+                    <li><a href="" class="active">Home</a></li>
+                    <li><a href=""  class="active1">About</a></li>
+                    <li><a href=""  class="active2">Contact</a></li>
+                    <li><a href="" class="active3">Support</a></li>
+					<li><a href= "/login"class="active3">Log-out</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="float-container">
+            <div class="float-child" >
+                <h2>Image Upload</h2>
+                <form action = "/uploader" method = "POST" enctype = "multipart/form-data" id="file-upload-form" class="uploader" style="padding: 10px;">
+					<!-- {{ csrf_token }} -->
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					
+                    <input id="file-upload" type="file" name="fileUpload" accept="image/*" onchange="loadFile(event)"/>
+                    <label for="file-upload" id="file-drag">
+                        <img id="output" src="#" class="hidden" style="max-width:100%; max-height:100%;">
+                        <div id="start">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            <div>Select a file or drag here</div>
+                            <div id="notimage" class="hidden">Please select an image</div>
+                            <span id="file-upload-btn" class="btn" style="background: #1e81b0;">Select a file</span>
+							<input class="btn" name="submit" type="submit" value="Predict"> 
+                        </div>
+                        <div id="response" class="hidden">
+                            <div id="messages"></div>
+                            <progress class="progress" id="file-progress" value="0">
+                                <span>0</span>%
+                            </progress>
+							
+                        </div>
+                    </label>
+                </form>
+				<br>
+				
+
+				<!-- <form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data">
+						 {{ csrf_token }} 
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					<input type = "file" name = "file" />
+					<input type = "submit"/>
+				</form> -->
+
+            </div>
+			<h2 style=" padding-top: 6rem; align-self: right: center;color: #1e81b0;">Result: {{msg}}</h2>
+         <div class="float-child"></div>
+        </div>
+        <!-- <div class="flex-container">
+            <div class="flex-child magenta">
+                <iframe width="400" height="300" src="https://www.youtube.com/embed/mDIVpJgjoXQ"></iframe>
+            </div>
+            <div class="flex-child magenta">
+                <iframe width="400" height="300" src="https://www.youtube.com/embed/EW0ffPcseKs"></iframe>
+            </div>
+            <div class="flex-child magenta">
+                <iframe width="400" height="300" src="https://www.youtube.com/embed/kfwGVgX3REM"></iframe>
+            </div> -->
+        </div>
+        <script>
+            const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const container = document.getElementById('container');
+
+signUpButton.addEventListener('click', () => {
+	container.classList.add("right-panel-active");
+});
+
+signInButton.addEventListener('click', () => {
+	container.classList.remove("right-panel-active");
+});
+
+// File Upload
+
+function ekUpload(){
+	function Init() {
+	  	console.log("Upload Initialised");
+	 	var fileSelect    = document.getElementById('file-upload'),
+		fileDrag      = document.getElementById('file-drag');
+	  	fileSelect.addEventListener('change', fileSelectHandler, false);
+	  	var xhr = new XMLHttpRequest();
+	 	if (xhr.upload) 
+		{
+			fileDrag.addEventListener('dragover', fileDragHover, false);
+			fileDrag.addEventListener('dragleave', fileDragHover, false);
+			fileDrag.addEventListener('drop', fileSelectHandler, false);
+	  	}
+	}
+  
+	function fileDragHover(e) {
+		var fileDrag = document.getElementById('file-drag');
+		e.stopPropagation();
+		e.preventDefault();
+	  	fileDrag.className = (e.type === 'dragover' ? 'hover' : 'modal-body file-upload');
+	}
+  
+	function fileSelectHandler(e) {
+	  	var files = e.target.files || e.dataTransfer.files;
+	  	fileDragHover(e);
+	  	for (var i = 0, f; f = files[i]; i++) 
+		{
+			parseFile(f);
+			uploadFile(f);
+	  	}
+	}
+  
+	function output(msg) {
+	  	var m = document.getElementById('messages');
+	  	m.innerHTML = msg;
+	}
+  
+	function parseFile(file) {
+		console.log(file.name);
+	  	output('<strong>' + encodeURI(file.name) + '</strong>');
+	  	var imageName = file.name;
+	  	var isGood = (/\.(?=gif|jpg|png|jpeg)/gi).test(imageName);
+	  	if (isGood) 
+		{
+			document.getElementById('start').classList.add("hidden");
+			document.getElementById('response').classList.remove("hidden");
+			document.getElementById('notimage').classList.add("hidden");
+			document.getElementById('file-image').classList.remove("hidden");
+			document.getElementById('file-image').src = URL.createObjectURL(file);
+	  	}
+	  	else 
+		{
+			document.getElementById('file-image').classList.add("hidden");
+			document.getElementById('notimage').classList.remove("hidden");
+			document.getElementById('start').classList.remove("hidden");
+			document.getElementById('response').classList.add("hidden");
+			document.getElementById("file-upload-form").reset();
+	  	}
+	}
+  
+	function setProgressMaxValue(e) {
+	 	var pBar = document.getElementById('file-progress');
+	  	if (e.lengthComputable)
+			pBar.max = e.total;
+	}
+  
+	function updateFileProgress(e) {
+	  	var pBar = document.getElementById('file-progress');
+	  	if (e.lengthComputable)
+			pBar.value = e.loaded;
+	}
+  
+	function uploadFile(file) {
+	  	var xhr = new XMLHttpRequest(),
+		pBar = document.getElementById('file-progress'),
+		fileSizeLimit = 1024; // In MB
+	  	if (xhr.upload) 
+		{
+			if (file.size <= fileSizeLimit * 1024 * 1024)
+			{
+				pBar.style.display = 'inline';
+				xhr.upload.addEventListener('loadstart', setProgressMaxValue, false);
+				xhr.upload.addEventListener('progress', updateFileProgress, false);
+		  		xhr.open('POST', document.getElementById('file-upload-form').action, true);
+		  		xhr.setRequestHeader('X-File-Name', file.name);
+		  		xhr.setRequestHeader('X-File-Size', file.size);
+		  		xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+		  		xhr.send(file);
+			} 
+			else
+		  		output('Please upload a smaller file (< ' + fileSizeLimit + ' MB).');
+	  	}
+	}
+  
+	if (window.File && window.FileList && window.FileReader)
+	  	Init();
+	else
+	  	document.getElementById('file-drag').style.display = 'none';
+}
+ekUpload();
+
+var loadFile = function(event) {
+	var image = document.getElementById('output');
+	image.src = URL.createObjectURL(event.target.files[0]);
+};
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+        </script>
+        <script>
+            var loadFile = function(event) {
+                var image = document.getElementById('output');
+                image.src = URL.createObjectURL(event.target.files[0]);
+            };
+            </script>
+    </body>
+</html>

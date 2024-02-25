@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static\style.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+        <link rel="icon" href="/static/logo.png" type="image/x-icon">
+        <title>Login - Dermato</title>
+    </head>
+    <body>
+
+
+        <!-- Form -->
+        <div class="container" id="container">
+            {{msg}}
+            <div class="form-container sign-up-container">
+                <form action="http://127.0.0.1:5000/register" method="POST" name="registerform">
+                    <!-- {{ csrf_token }} -->
+                    <h1>Create Account</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f" style="color: #0066cc;"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g" style="color: #dc483c;"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in" style="color: #0a66c2;"></i></a>
+                    </div>
+                    <span>Or Use Your Email for Registration</span>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="text" name = "name" placeholder="Name" />
+                    <input type="number" name = "contact" placeholder="Contact Number" />
+                    <input type="email" name = "email" placeholder="Email" />
+                    <input type="password" name = "password" placeholder="Password" />
+                    <!-- <input type = submit value= "Sign Up" onClick="signup"> -->
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+            <div class="form-container sign-in-container">
+                <form action="loginuser" method="POST"  name="loginform">
+                    <!-- {{ csrf_token }} -->
+                    <h1>Sign In</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f" style="color: #0066cc;"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g" style="color: #dc483c;"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in" style="color: #0a66c2;"></i></a>
+                    </div>
+                    <span>Or Use Your Account</span>
+                    <input type="email" name="email" placeholder="Email" />
+                    <input type="password" name="password" placeholder="Password" />
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <a href="#">Forgot your password?</a>
+                    <button type="submit">Sign In</button>
+                    <!-- <input type="submit" value="submit" onClick="login()"> -->
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>To Keep Connected with us Please Login with your Personal Info</p>
+                        <button class="ghost" id="signIn">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>New to Dermato?</h1>
+                        <p>Enter your Personal Details and Start Journey with Us</p>
+                        <button class="ghost" id="signUp">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>
+
+<script>
+function login(){
+document.loginform.submit();
+}
+
+function signup(){
+document.registerform.submit();
+}
+
+
+const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const container = document.getElementById('container');
+
+signUpButton.addEventListener('click', () => {
+    container.classList.add("right-panel-active");
+});
+
+signInButton.addEventListener('click', () => {
+    container.classList.remove("right-panel-active");
+});
+
+
+
+</script>
